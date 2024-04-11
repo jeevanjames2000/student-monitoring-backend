@@ -1,7 +1,6 @@
 const qr = require("qrcode");
 const { Buffer } = require("buffer");
 const Student = require("../models/Student");
-const StudentQrCode = require("../models/StudentQrCode");
 
 const generateQRCode = async (data) => {
   try {
@@ -71,7 +70,38 @@ module.exports = {
   },
   scanQR: async (req, res) => {},
 
-  createPost: async (req, res) => {},
+  insertStudent: async (req, res) => {
+    try {
+      const { name, rollNumber, year, branch, entryTime, exitTime } = req.body;
+
+      // Check if the student with the given rollNumber already exists
+      const existingStudent = await Student.findOne({ rollNumber });
+
+      if (existingStudent) {
+        return res
+          .status(400)
+          .json({ message: "Student with this rollNumber already exists" });
+      }
+
+      // Create a new student object without password and userName
+      const newStudent = new Student({
+        name,
+        rollNumber,
+        year,
+        branch,
+        entryTime,
+        exitTime,
+      });
+
+      // Save the new student to the database
+      const savedStudent = await newStudent.save();
+
+      res.status(201).json(savedStudent); // Return the saved student
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   getAllStudents: async (req, res) => {
     try {
       const students = await Student.find();
@@ -124,6 +154,28 @@ module.exports = {
       const updatedStudent = await student.save();
 
       res.json(updatedStudent);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  // Delete student by rollNumber
+  deleteStudentByRollNumber: async (req, res) => {
+    try {
+      const { rollNumber } = req.params;
+
+      // Find the student by rollNumber and delete
+      const deletedStudent = await Student.findOneAndDelete({ rollNumber });
+
+      if (!deletedStudent) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      res
+        .status(200)
+        .json({
+          message: "Student deleted successfully",
+          student: deletedStudent,
+        });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

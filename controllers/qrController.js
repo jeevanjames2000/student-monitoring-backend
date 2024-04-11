@@ -1,7 +1,5 @@
 const qr = require("qrcode");
 const { Buffer } = require("buffer");
-const FacultyQrCode = require("../models/FacultyQrCode");
-const StudentQrCode = require("../models/StudentQrCode");
 const Student = require("../models/Student");
 const Faculty = require("../models/Faculty");
 

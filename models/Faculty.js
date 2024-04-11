@@ -4,15 +4,13 @@ const mongoose = require("mongoose");
 const facultySchema = new mongoose.Schema({
   emplyoeeId: {
     type: String,
-    required: true,
   },
   name: {
     type: String,
     required: true,
   },
   entryTime: {
-    type: Date,
-    default: Date.now,
+    type: String,
   },
   branch: {
     type: String,
@@ -24,14 +22,12 @@ const facultySchema = new mongoose.Schema({
   },
   userName: {
     type: String,
-    required: true,
   },
   exitTime: {
     type: String,
   },
   password: {
     type: String,
-    required: true,
   },
   qrCode: {
     type: String,

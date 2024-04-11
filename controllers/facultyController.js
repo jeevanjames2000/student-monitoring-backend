@@ -68,13 +68,112 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
-  scanQR: async (req, res) => {},
+  insertFaculty: async (req, res) => {
+    try {
+      const { name, emplyoeeId, designation, branch, entryTime, exitTime } =
+        req.body;
 
-  createPost: async (req, res) => {},
+      // Check if the student with the given rollNumber already exists
+      const existingFaculty = await Faculty.findOne({ emplyoeeId });
+
+      if (existingFaculty) {
+        return res
+          .status(400)
+          .json({ message: "Student with this rollNumber already exists" });
+      }
+
+      // Create a new student object without password and userName
+      const newFaculty = new Faculty({
+        name,
+        emplyoeeId,
+        designation,
+        branch,
+        entryTime,
+        exitTime,
+      });
+
+      // Save the new student to the database
+      const savedStudent = await newFaculty.save();
+
+      res.status(201).json(savedStudent); // Return the saved student
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   getAllFaculty: async (req, res) => {
     try {
       const faculty = await Faculty.find();
       res.status(200).json(faculty);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  getFacultyById: async (req, res) => {
+    try {
+      const { emplyoeeId } = req.body;
+
+      const faculty = await Faculty.findOne({ emplyoeeId });
+
+      if (!faculty) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      res.json(faculty);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  updateById: async (req, res) => {
+    try {
+      const { emplyoeeId, designation, name, branch, exitTime, entryTime } =
+        req.body;
+
+      const faculty = await Faculty.findOne({ emplyoeeId });
+
+      if (!faculty) {
+        return res.status(404).json({ message: "Faculty not found" });
+      }
+
+      if (name) {
+        faculty.name = name;
+      }
+      if (designation) {
+        faculty.designation = designation;
+      }
+      if (branch) {
+        faculty.branch = branch;
+      }
+      if (entryTime) {
+        faculty.entryTime = entryTime;
+      }
+      if (exitTime) {
+        faculty.exitTime = exitTime;
+      }
+
+      const updatedFaculty = await faculty.save();
+
+      res.json(updatedFaculty);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  // Delete student by rollNumber
+  deleteFacultyById: async (req, res) => {
+    try {
+      const { emplyoeeId } = req.params;
+
+      // Find the student by rollNumber and delete
+      const faculty = await Faculty.findOneAndDelete({ emplyoeeId });
+
+      if (!faculty) {
+        return res.status(404).json({ message: "Faculty not found" });
+      }
+
+      res.status(200).json({
+        message: "Student deleted successfully",
+        faculty: faculty,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

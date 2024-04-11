@@ -3,7 +3,6 @@ const { mongoose } = require("mongoose");
 const studentSchema = new mongoose.Schema({
   userName: {
     type: String,
-    required: true,
   },
   rollNumber: {
     type: String,
@@ -29,7 +28,6 @@ const studentSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   qrCode: {
     type: String,

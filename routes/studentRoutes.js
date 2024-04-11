@@ -10,10 +10,13 @@ const studentController = require("../controllers/studentController");
 router.post("/register", studentController.register);
 router.post("/login", studentController.login);
 router.post("/scanQR", studentController.scanQR);
-router.post("/post", studentController.createPost);
+router.post("/insertStudent", studentController.insertStudent);
 router.get("/getAllStudents", studentController.getAllStudents);
 router.put("/updateByRollNum", studentController.updateByRollNum);
+router.delete(
+  "/deleteStudentByRollNumber/:rollNumber",
+  studentController.deleteStudentByRollNumber
+);
 router.get("/students", studentController.getStudentByRollNumber);
-router.get("/allstudents", studentController.getAllStudents);
 
 module.exports = router;
