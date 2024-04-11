@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-// Define faculty schema
-const facultySchema = new mongoose.Schema({
+// Define QrCode schema
+const FacultyQrCodeSchema = new mongoose.Schema({
   emplyoeeId: {
     type: String,
     required: true,
@@ -22,23 +22,16 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userName: {
-    type: String,
-    required: true,
-  },
+
   exitTime: {
     type: String,
-  },
-  password: {
-    type: String,
-    required: true,
   },
   qrCode: {
     type: String,
   },
 });
 
-// Create Faculty model
-const Faculty = mongoose.model("Faculty", facultySchema);
+// Create QrCode model
+const FacultyQrCode = mongoose.model("FacultyQrCode", FacultyQrCodeSchema);
 
-module.exports = Faculty;
+module.exports = FacultyQrCode;

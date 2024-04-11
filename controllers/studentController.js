@@ -1,6 +1,7 @@
 const qr = require("qrcode");
 const { Buffer } = require("buffer");
 const Student = require("../models/Student");
+const StudentQrCode = require("../models/StudentQrCode");
 
 const generateQRCode = async (data) => {
   try {
@@ -14,28 +15,27 @@ const generateQRCode = async (data) => {
 module.exports = {
   register: async (req, res) => {
     try {
-      const { userName, rollNum, name, year, branch, password } = req.body;
+      const { userName, rollNumber, name, year, branch, password } = req.body;
       const existingStudent = await Student.findOne({ userName });
 
       if (existingStudent) {
         return res.status(400).json({ message: "Student already registered" });
       }
 
-      // Generate QR code data URI
       const qrCodeData = {
         userName,
-        rollNum,
+        rollNumber,
         name,
         year,
         branch,
       };
-      const qrCodeDataUri = await generateQRCode(qrCodeData); // Assume generateQRCode is a function that generates QR code data URI
+      const qrCodeDataUri = await generateQRCode(qrCodeData);
 
       const newStudent = new Student({
-        rollNum,
+        rollNumber,
         userName,
         name,
-        year, 
+        year,
         branch,
         password,
         qrCode: qrCodeDataUri, // Save QR code data URI to database
@@ -54,6 +54,7 @@ module.exports = {
       const { userName, password } = req.body;
 
       const student = await Student.findOne({ userName });
+      console.log("student: ", student);
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
@@ -63,12 +64,13 @@ module.exports = {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      res.status(200).json({ message: "Login successful" });
+      res.status(200).json({ message: "Login successful", type: true });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
   scanQR: async (req, res) => {},
+
   createPost: async (req, res) => {},
   getAllStudents: async (req, res) => {
     try {
@@ -80,9 +82,9 @@ module.exports = {
   },
   getStudentByRollNumber: async (req, res) => {
     try {
-      const { rollNum } = req.body;
+      const { rollNumber } = req.body;
 
-      const student = await Student.findOne({ rollNum });
+      const student = await Student.findOne({ rollNumber });
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
@@ -95,15 +97,14 @@ module.exports = {
   },
   updateByRollNum: async (req, res) => {
     try {
-      const { rollNum } = req.body;
-      console.log(rollNum);
-      const { name, year, branch, exitTime, entryTime } = req.body;
+      const { rollNumber, name, year, branch, exitTime, entryTime } = req.body;
 
-      const student = await Student.findOne({ rollNum });
+      const student = await Student.findOne({ rollNumber });
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
+
       if (name) {
         student.name = name;
       }
@@ -116,7 +117,6 @@ module.exports = {
       if (entryTime) {
         student.entryTime = entryTime;
       }
-
       if (exitTime) {
         student.exitTime = exitTime;
       }

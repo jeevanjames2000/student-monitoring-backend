@@ -12,7 +12,7 @@ router.post("/login", studentController.login);
 router.post("/scanQR", studentController.scanQR);
 router.post("/post", studentController.createPost);
 router.get("/getAllStudents", studentController.getAllStudents);
-router.put("/updatestudent", studentController.updateByRollNum);
+router.put("/updateByRollNum", studentController.updateByRollNum);
 router.get("/students", studentController.getStudentByRollNumber);
 router.get("/allstudents", studentController.getAllStudents);
 
