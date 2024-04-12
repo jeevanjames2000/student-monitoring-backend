@@ -20,5 +20,6 @@ router.delete(
   "/deleteFacultyById/:emplyoeeId",
   facultyController.deleteFacultyById
 );
+router.post("/scanFaculty", qrController.scanFaculty);
 
 module.exports = router;

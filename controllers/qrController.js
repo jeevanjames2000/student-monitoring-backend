@@ -96,5 +96,37 @@ module.exports = {
     }
   },
 
+  // POST endpoint for faculty data
+  scanFaculty: async (req, res) => {
+    try {
+      // Extract data from request body
+      const { employeeId, name, branch, designation, entryTime, exitTime } =
+        req.body.faculty;
+
+      // Create new faculty object
+      const newFaculty = new Faculty({
+        employeeId,
+        name,
+        branch,
+        designation,
+        entryTime,
+        exitTime,
+      });
+
+      // Save faculty data to the database
+      const savedFaculty = await newFaculty.save();
+
+      // Send success response
+      res.status(201).json({
+        message: "Faculty data saved successfully",
+        faculty: savedFaculty,
+      });
+    } catch (error) {
+      // Send error response
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
   generateQRCode: generateQRCode,
 };

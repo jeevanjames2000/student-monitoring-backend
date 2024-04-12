@@ -105,6 +105,7 @@ module.exports = {
   getAllStudents: async (req, res) => {
     try {
       const students = await Student.find();
+
       res.status(200).json(students);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -170,14 +171,73 @@ module.exports = {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      res
-        .status(200)
-        .json({
-          message: "Student deleted successfully",
-          student: deletedStudent,
-        });
+      res.status(200).json({
+        message: "Student deleted successfully",
+        student: deletedStudent,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  },
+  entryStudent: async (req, res) => {
+    try {
+      // Extract data from request body
+      const { rollNumber } = req.body;
+
+      // Find the student in the database
+      const student = await Student.findOne({ rollNumber });
+
+      if (!student) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      // Update the student's entryTime to current date and time
+      student.entryTime = Date.now();
+
+      // Save student data to the database
+      const savedStudent = await student.save();
+
+      // Send success response
+      res.status(200).json({
+        message: "Student entry time updated successfully",
+        student: savedStudent,
+      });
+    } catch (error) {
+      // Send error response
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
+
+  exitStudent: async (req, res) => {
+    try {
+      // Extract data from request body
+      const { rollNumber } = req.body;
+
+      // Find the student in the database
+      const student = await Student.findOne({ rollNumber });
+
+      if (!student) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      // Update the student's exitTime to current date and time
+      student.exitTime = Date.now();
+
+      // Save student data to the database
+      const savedStudent = await student.save();
+
+      // Send success response
+      res.status(200).json({
+        message: "Student exit time updated successfully",
+        student: savedStudent,
+      });
+    } catch (error) {
+      // Send error response
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
     }
   },
 

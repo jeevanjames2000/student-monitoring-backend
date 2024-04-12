@@ -5,6 +5,7 @@ const router = express.Router();
 
 // Import student controller
 const studentController = require("../controllers/studentController");
+const qrController = require("../controllers/qrController");
 
 // Define routes
 router.post("/register", studentController.register);
@@ -18,5 +19,7 @@ router.delete(
   studentController.deleteStudentByRollNumber
 );
 router.get("/students", studentController.getStudentByRollNumber);
+router.post("/entryStudent", studentController.entryStudent);
+router.post("/exitStudent", studentController.exitStudent);
 
 module.exports = router;
