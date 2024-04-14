@@ -10,7 +10,6 @@ const qrController = require("../controllers/qrController");
 // Define routes
 router.post("/register", facultyController.register);
 router.post("/login", facultyController.login);
-// router.post("/scanQR", facultyController.scanQR);
 router.post("/generateNewQr", qrController.generateNewQr);
 router.post("/insertFaculty", facultyController.insertFaculty);
 router.get("/getAllFaculty", facultyController.getAllFaculty);
