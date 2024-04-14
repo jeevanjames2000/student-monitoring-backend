@@ -63,7 +63,7 @@ module.exports = {
         return res.status(401).json({ message: "Invalid password" });
       }
 
-      res.status(200).json({ message: "Login successful", type: true });
+      res.status(200).json({ message: "Login successful", type: false });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
