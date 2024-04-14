@@ -37,7 +37,7 @@ module.exports = {
         year,
         branch,
         password,
-        qrCode: qrCodeDataUri, // Save QR code data URI to database
+        qrCode: qrCodeDataUri,
       });
 
       const savedStudent = await newStudent.save();
@@ -74,7 +74,6 @@ module.exports = {
     try {
       const { name, rollNumber, year, branch, entryTime, exitTime } = req.body;
 
-      // Check if the student with the given rollNumber already exists
       const existingStudent = await Student.findOne({ rollNumber });
 
       if (existingStudent) {
@@ -83,7 +82,6 @@ module.exports = {
           .json({ message: "Student with this rollNumber already exists" });
       }
 
-      // Create a new student object without password and userName
       const newStudent = new Student({
         name,
         rollNumber,
@@ -93,10 +91,9 @@ module.exports = {
         exitTime,
       });
 
-      // Save the new student to the database
       const savedStudent = await newStudent.save();
 
-      res.status(201).json(savedStudent); // Return the saved student
+      res.status(201).json(savedStudent);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -159,12 +156,11 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
-  // Delete student by rollNumber
+
   deleteStudentByRollNumber: async (req, res) => {
     try {
       const { rollNumber } = req.params;
 
-      // Find the student by rollNumber and delete
       const deletedStudent = await Student.findOneAndDelete({ rollNumber });
 
       if (!deletedStudent) {
@@ -181,29 +177,26 @@ module.exports = {
   },
   entryStudent: async (req, res) => {
     try {
-      // Extract data from request body
       const { rollNumber } = req.body;
 
-      // Find the student in the database
       const student = await Student.findOne({ rollNumber });
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      // Update the student's entryTime to current date and time
-      student.entryTime = Date.now();
+      student.entryTime = new Date(); // Get the current date and time
 
-      // Save student data to the database
       const savedStudent = await student.save();
 
-      // Send success response
       res.status(200).json({
         message: "Student entry time updated successfully",
-        student: savedStudent,
+        student: {
+          ...savedStudent._doc,
+          entryTime: moment(student.entryTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+        },
       });
     } catch (error) {
-      // Send error response
       res
         .status(500)
         .json({ message: "Internal server error", error: error.message });
@@ -212,29 +205,26 @@ module.exports = {
 
   exitStudent: async (req, res) => {
     try {
-      // Extract data from request body
       const { rollNumber } = req.body;
 
-      // Find the student in the database
       const student = await Student.findOne({ rollNumber });
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      // Update the student's exitTime to current date and time
-      student.exitTime = Date.now();
+      student.exitTime = new Date(); // Get the current date and time
 
-      // Save student data to the database
       const savedStudent = await student.save();
 
-      // Send success response
       res.status(200).json({
         message: "Student exit time updated successfully",
-        student: savedStudent,
+        student: {
+          ...savedStudent._doc,
+          exitTime: moment(student.exitTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+        },
       });
     } catch (error) {
-      // Send error response
       res
         .status(500)
         .json({ message: "Internal server error", error: error.message });

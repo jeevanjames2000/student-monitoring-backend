@@ -21,5 +21,7 @@ router.delete(
   facultyController.deleteFacultyById
 );
 router.post("/scanFaculty", qrController.scanFaculty);
+router.post("/entryFaculty", facultyController.entryFaculty);
+router.post("/exitFaculty", facultyController.exitFaculty);
 
 module.exports = router;

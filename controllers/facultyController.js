@@ -178,5 +178,60 @@ module.exports = {
       res.status(500).json({ message: error.message });
     }
   },
+  entryFaculty: async (req, res) => {
+    try {
+      const { emplyoeeId } = req.body;
+
+      const faculty = await Faculty.findOne({ emplyoeeId });
+
+      if (!faculty) {
+        return res.status(404).json({ message: "faculty not found" });
+      }
+
+      faculty.entryTime = new Date(); // Get the current date and time
+
+      const savedfaculty = await faculty.save();
+
+      res.status(200).json({
+        message: "faculty entry time updated successfully",
+        faculty: {
+          ...savedfaculty._doc,
+          entryTime: moment(faculty.entryTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+        },
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
+
+  exitFaculty: async (req, res) => {
+    try {
+      const { emplyoeeId } = req.body;
+
+      const faculty = await Faculty.findOne({ emplyoeeId });
+
+      if (!faculty) {
+        return res.status(404).json({ message: "faculty not found" });
+      }
+
+      faculty.exitTime = new Date(); // Get the current date and time
+
+      const savedfaculty = await faculty.save();
+
+      res.status(200).json({
+        message: "faculty exit time updated successfully",
+        faculty: {
+          ...savedfaculty._doc,
+          exitTime: moment(faculty.exitTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+        },
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
   generateQRCode: generateQRCode,
 };
