@@ -13,10 +13,12 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   entryTime: {
-    type: String,
+    type: Date,
+    default: Date.now,
   },
   exitTime: {
-    type: String,
+    type: Date,
+    default: Date.now,
   },
   year: {
     type: String,

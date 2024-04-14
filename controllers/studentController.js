@@ -1,6 +1,8 @@
 const qr = require("qrcode");
 const { Buffer } = require("buffer");
 const Student = require("../models/Student");
+const moment = require("moment");
+const { DateTime } = require("luxon");
 
 const generateQRCode = async (data) => {
   try {
@@ -185,7 +187,16 @@ module.exports = {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      student.entryTime = new Date(); // Get the current date and time
+      // Get current Indian Standard Time (IST)
+      const currentTime = new Date();
+      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
+      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+
+      // Set entryTime to current Indian Standard Time
+      student.entryTime = currentTime;
+
+      // Mark entryTime property as modified
+      student.markModified("entryTime");
 
       const savedStudent = await student.save();
 
@@ -193,7 +204,7 @@ module.exports = {
         message: "Student entry time updated successfully",
         student: {
           ...savedStudent._doc,
-          entryTime: moment(student.entryTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+          entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
         },
       });
     } catch (error) {
@@ -213,7 +224,16 @@ module.exports = {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      student.exitTime = new Date(); // Get the current date and time
+      // Get current Indian Standard Time (IST)
+      const currentTime = new Date();
+      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
+      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+
+      // Set exitTime to current Indian Standard Time
+      student.exitTime = currentTime;
+
+      // Mark exitTime property as modified
+      student.markModified("exitTime");
 
       const savedStudent = await student.save();
 
@@ -221,7 +241,7 @@ module.exports = {
         message: "Student exit time updated successfully",
         student: {
           ...savedStudent._doc,
-          exitTime: moment(student.exitTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+          exitTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
         },
       });
     } catch (error) {

@@ -188,7 +188,16 @@ module.exports = {
         return res.status(404).json({ message: "faculty not found" });
       }
 
-      faculty.entryTime = new Date(); // Get the current date and time
+      // Get current Indian Standard Time (IST)
+      const currentTime = new Date();
+      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
+      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+
+      // Set entryTime to current Indian Standard Time
+      faculty.entryTime = currentTime;
+
+      // Mark entryTime property as modified
+      faculty.markModified("entryTime");
 
       const savedfaculty = await faculty.save();
 
@@ -196,7 +205,7 @@ module.exports = {
         message: "faculty entry time updated successfully",
         faculty: {
           ...savedfaculty._doc,
-          entryTime: moment(faculty.entryTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+          entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
         },
       });
     } catch (error) {
@@ -216,7 +225,16 @@ module.exports = {
         return res.status(404).json({ message: "faculty not found" });
       }
 
-      faculty.exitTime = new Date(); // Get the current date and time
+      // Get current Indian Standard Time (IST)
+      const currentTime = new Date();
+      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
+      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+
+      // Set exitTime to current Indian Standard Time
+      faculty.exitTime = currentTime;
+
+      // Mark exitTime property as modified
+      faculty.markModified("exitTime");
 
       const savedfaculty = await faculty.save();
 
@@ -224,7 +242,7 @@ module.exports = {
         message: "faculty exit time updated successfully",
         faculty: {
           ...savedfaculty._doc,
-          exitTime: moment(faculty.exitTime).format("YYYY-MM-DD HH:mm:ss"), // Convert timestamp to human-readable format
+          exitTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
         },
       });
     } catch (error) {
