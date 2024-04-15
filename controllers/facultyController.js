@@ -82,6 +82,16 @@ module.exports = {
           .json({ message: "Student with this rollNumber already exists" });
       }
 
+      const qrCodeData = {
+        name,
+        emplyoeeId,
+        designation,
+        branch,
+        entryTime,
+        exitTime,
+      };
+      const qrCodeDataUri = await generateQRCode(qrCodeData);
+
       // Create a new student object without password and userName
       const newFaculty = new Faculty({
         name,
@@ -90,6 +100,7 @@ module.exports = {
         branch,
         entryTime,
         exitTime,
+        qrCode: qrCodeDataUri,
       });
 
       // Save the new student to the database

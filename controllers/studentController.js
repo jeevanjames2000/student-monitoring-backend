@@ -83,7 +83,14 @@ module.exports = {
           .status(400)
           .json({ message: "Student with this rollNumber already exists" });
       }
-
+      const qrCodeData = {
+        userName,
+        rollNumber,
+        name,
+        year,
+        branch,
+      };
+      const qrCodeDataUri = await generateQRCode(qrCodeData);
       const newStudent = new Student({
         name,
         rollNumber,
@@ -91,6 +98,7 @@ module.exports = {
         branch,
         entryTime,
         exitTime,
+        qrCode: qrCodeDataUri,
       });
 
       const savedStudent = await newStudent.save();
