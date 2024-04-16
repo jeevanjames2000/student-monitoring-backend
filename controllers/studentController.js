@@ -88,8 +88,6 @@ module.exports = {
       }
       const qrCodeData = {
         user: "student",
-
-        userName,
         rollNumber,
         name,
         year,
