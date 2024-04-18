@@ -18,6 +18,7 @@ module.exports = {
   generateNewQr: async (req, res) => {
     try {
       const {
+        userType,
         rollNumber,
         emplyoeeId,
         branch,
@@ -25,15 +26,21 @@ module.exports = {
         year,
         designation,
         entryTime,
-        userType,
         exitTime,
       } = req.body;
 
+      if (!userType) {
+        return res.status(400).json({
+          success: false,
+          message: "User type required",
+        });
+      }
+
       const data = {
+        userType,
         rollNumber,
         emplyoeeId,
         branch,
-        userType,
         name,
         year,
         designation,
@@ -46,7 +53,15 @@ module.exports = {
 
       let user;
 
-      if (userType === "admin") {
+      // Check userType and update/create user
+      if (userType === "student") {
+        let existingUser = await Student.findOneAndUpdate(
+          { rollNumber: rollNumber },
+          { $set: { qrCode: qrCodeDataUri } },
+          { new: true }
+        );
+        user = existingUser;
+      } else if (userType === "faculty") {
         let existingUser = await Faculty.findOneAndUpdate(
           { emplyoeeId: emplyoeeId },
           { $set: { qrCode: qrCodeDataUri } },
@@ -54,6 +69,13 @@ module.exports = {
         );
         user = existingUser;
       } else {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid user type",
+        });
+      }
+
+      if (!user) {
         return res.status(404).json({
           success: false,
           message: "User not found",
@@ -96,7 +118,7 @@ module.exports = {
 
       // Send success response
       res.status(201).json({
-        message: "User data saved successfully",
+        message: "Faculty data saved successfully",
         faculty: savedFaculty,
       });
     } catch (error) {
