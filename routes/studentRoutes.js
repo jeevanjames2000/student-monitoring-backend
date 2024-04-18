@@ -8,8 +8,8 @@ const studentController = require("../controllers/studentController");
 const qrController = require("../controllers/qrController");
 
 // Define routes
-router.post("/register", studentController.register);
-router.post("/login", studentController.login);
+// router.post("/register", studentController.register);
+// router.post("/login", studentController.login);
 router.post("/scanQR", studentController.scanQR);
 router.post("/insertStudent", studentController.insertStudent);
 router.get("/getAllStudents", studentController.getAllStudents);

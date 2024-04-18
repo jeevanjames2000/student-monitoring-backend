@@ -14,65 +14,64 @@ const generateQRCode = async (data) => {
   }
 };
 module.exports = {
-  register: async (req, res) => {
-    try {
-      const { userName, rollNumber, name, year, branch, password } = req.body;
-      const existingStudent = await Student.findOne({ userName });
+  // register: async (req, res) => {
+  //   try {
+  //     const { userName, rollNumber, name, year, branch, password } = req.body;
+  //     const existingStudent = await Student.findOne({ userName });
 
-      if (existingStudent) {
-        return res.status(400).json({ message: "Student already registered" });
-      }
+  //     if (existingStudent) {
+  //       return res.status(400).json({ message: "Student already registered" });
+  //     }
 
-      const qrCodeData = {
-        user: "student",
-        userName,
-        rollNumber,
-        name,
-        year,
-        branch,
-      };
-      const qrCodeDataUri = await generateQRCode(qrCodeData);
+  //     const qrCodeData = {
+  //       userName,
+  //       rollNumber,
+  //       name,
+  //       year,
+  //       branch,
+  //     };
+  //     const qrCodeDataUri = await generateQRCode(qrCodeData);
 
-      const newStudent = new Student({
-        // user: "student",
+  //     const newStudent = new Student({
+  //       // user: "student",
 
-        rollNumber,
-        userName,
-        name,
-        year,
-        branch,
-        password,
-        qrCode: qrCodeDataUri,
-      });
+  //       rollNumber,
+  //       userName,
+  //       name,
+  //       year,
+  //       branch,
+  //       password,
+  //       qrCode: qrCodeDataUri,
+  //     });
 
-      const savedStudent = await newStudent.save();
+  //     const savedStudent = await newStudent.save();
 
-      res.status(201).json({ student: savedStudent });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+  //     res.status(201).json({ student: savedStudent });
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // },
 
-  login: async (req, res) => {
-    try {
-      const { userName, password } = req.body;
+  // login: async (req, res) => {
+  //   try {
+  //     const { userName, password } = req.body;
 
-      const student = await Student.findOne({ userName });
-      console.log("student: ", student);
+  //     const student = await Student.findOne({ userName });
+  //     console.log("student: ", student);
 
-      if (!student) {
-        return res.status(404).json({ message: "Student not found" });
-      }
+  //     if (!student) {
+  //       return res.status(404).json({ message: "Student not found" });
+  //     }
 
-      if (student.password !== password) {
-        return res.status(401).json({ message: "Invalid password" });
-      }
+  //     if (student.password !== password) {
+  //       return res.status(401).json({ message: "Invalid password" });
+  //     }
 
-      res.status(200).json({ message: "Login successful", type: false });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+  //     res.status(200).json({ message: "Login successful", type: false });
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // },
   scanQR: async (req, res) => {},
 
   insertStudent: async (req, res) => {
@@ -87,7 +86,6 @@ module.exports = {
           .json({ message: "Student with this rollNumber already exists" });
       }
       const qrCodeData = {
-        user: "student",
         rollNumber,
         name,
         year,
@@ -97,8 +95,6 @@ module.exports = {
       const newStudent = new Student({
         name,
         rollNumber,
-        user: "student",
-
         year,
         branch,
         entryTime,

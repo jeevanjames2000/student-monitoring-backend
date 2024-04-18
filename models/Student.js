@@ -12,9 +12,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  user: {
-    type: String,
-  },
+
   entryTime: {
     type: Date,
     default: Date.now,

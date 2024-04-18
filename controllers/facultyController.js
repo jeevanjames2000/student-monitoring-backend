@@ -20,11 +20,11 @@ module.exports = {
       const existingFaculty = await Faculty.findOne({ userName });
 
       if (existingFaculty) {
-        return res.status(400).json({ message: "Faculty already registered" });
+        return res.status(400).json({ message: "User already registered" });
       }
 
       const qrCodeData = {
-        user: "faculty",
+        user: "admin",
         emplyoeeId,
         name,
         branch,
@@ -35,7 +35,7 @@ module.exports = {
       const newFaculty = new Faculty({
         emplyoeeId,
         name,
-        user: "faculty",
+        user: "admin",
         branch,
         designation,
         userName,
@@ -58,7 +58,7 @@ module.exports = {
       const faculty = await Faculty.findOne({ userName });
 
       if (!faculty) {
-        return res.status(404).json({ message: "Faculty not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       if (faculty.password !== password) {
@@ -81,11 +81,11 @@ module.exports = {
       if (existingFaculty) {
         return res
           .status(400)
-          .json({ message: "Student with this rollNumber already exists" });
+          .json({ message: "User with this rollNumber already exists" });
       }
 
       const qrCodeData = {
-        user: "faculty",
+        user: "admin",
         name,
         emplyoeeId,
         designation,
@@ -98,8 +98,7 @@ module.exports = {
       // Create a new student object without password and userName
       const newFaculty = new Faculty({
         name,
-        user: "faculty",
-
+        user: "admin",
         emplyoeeId,
         designation,
         branch,
@@ -132,7 +131,7 @@ module.exports = {
       const faculty = await Faculty.findOne({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "Student not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       res.json(faculty);
@@ -148,7 +147,7 @@ module.exports = {
       const faculty = await Faculty.findOne({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "Faculty not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       if (name) {
@@ -183,11 +182,11 @@ module.exports = {
       const faculty = await Faculty.findOneAndDelete({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "Faculty not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       res.status(200).json({
-        message: "Student deleted successfully",
+        message: "User deleted successfully",
         faculty: faculty,
       });
     } catch (error) {
@@ -201,7 +200,7 @@ module.exports = {
       const faculty = await Faculty.findOne({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "faculty not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Get current Indian Standard Time (IST)
@@ -218,7 +217,7 @@ module.exports = {
       const savedfaculty = await faculty.save();
 
       res.status(200).json({
-        message: "faculty entry time updated successfully",
+        message: "User entry time updated successfully",
         faculty: {
           ...savedfaculty._doc,
           entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
@@ -238,7 +237,7 @@ module.exports = {
       const faculty = await Faculty.findOne({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "faculty not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Get current Indian Standard Time (IST)
@@ -255,7 +254,7 @@ module.exports = {
       const savedfaculty = await faculty.save();
 
       res.status(200).json({
-        message: "faculty exit time updated successfully",
+        message: "User exit time updated successfully",
         faculty: {
           ...savedfaculty._doc,
           exitTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
