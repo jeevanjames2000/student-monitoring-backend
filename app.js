@@ -8,7 +8,7 @@ app.use(cors());
 // MongoDB connection
 mongoose
   .connect(
-    "mongodb+srv://jeevanjames2000:nyv3wW4zpq91oSY3@jeevan.e2hrudn.mongodb.net/?retryWrites=true&w=majority&appName=Jeevan0"
+    "mongodb+srv://rahulrouthu300:EX10a4VOu0oVYWGN@cluster0.4npxgwr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => {
