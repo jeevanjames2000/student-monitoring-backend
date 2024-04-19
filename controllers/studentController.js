@@ -14,64 +14,6 @@ const generateQRCode = async (data) => {
   }
 };
 module.exports = {
-  // register: async (req, res) => {
-  //   try {
-  //     const { userName, rollNumber, name, year, branch, password } = req.body;
-  //     const existingStudent = await Student.findOne({ userName });
-
-  //     if (existingStudent) {
-  //       return res.status(400).json({ message: "Student already registered" });
-  //     }
-
-  //     const qrCodeData = {
-  //       userName,
-  //       rollNumber,
-  //       name,
-  //       year,
-  //       branch,
-  //     };
-  //     const qrCodeDataUri = await generateQRCode(qrCodeData);
-
-  //     const newStudent = new Student({
-  //       // user: "student",
-
-  //       rollNumber,
-  //       userName,
-  //       name,
-  //       year,
-  //       branch,
-  //       password,
-  //       qrCode: qrCodeDataUri,
-  //     });
-
-  //     const savedStudent = await newStudent.save();
-
-  //     res.status(201).json({ student: savedStudent });
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // },
-
-  // login: async (req, res) => {
-  //   try {
-  //     const { userName, password } = req.body;
-
-  //     const student = await Student.findOne({ userName });
-  //     console.log("student: ", student);
-
-  //     if (!student) {
-  //       return res.status(404).json({ message: "Student not found" });
-  //     }
-
-  //     if (student.password !== password) {
-  //       return res.status(401).json({ message: "Invalid password" });
-  //     }
-
-  //     res.status(200).json({ message: "Login successful", type: false });
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // },
   scanQR: async (req, res) => {},
 
   insertStudent: async (req, res) => {
@@ -198,28 +140,22 @@ module.exports = {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      // Get current Indian Standard Time (IST)
       const currentTime = new Date();
-      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
-      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+      currentTime.setHours(currentTime.getHours() + 5);
+      currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      // Fetch student's exit time from the database
       const exitTime = student.exitTime;
 
-      // Calculate time difference between exit time and current time
-      const timeDifferenceInMilliseconds = currentTime - exitTime;
-      const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000; // Convert to seconds
+      const timeDifferenceInMilliseconds =
+        currentTime.getTime() - exitTime.getTime();
       const totalTimeOutsideInMinutes = Math.round(
-        timeDifferenceInSeconds / 60
-      ); // Convert to minutes and round to the nearest minute
+        timeDifferenceInMilliseconds / (1000 * 60)
+      );
 
-      // Update totalTime field in the database
       student.totalTime = totalTimeOutsideInMinutes;
 
-      // Set entryTime to current Indian Standard Time
       student.entryTime = currentTime;
 
-      // Mark entryTime and totalTime properties as modified
       student.markModified("entryTime");
       student.markModified("totalTime");
 
@@ -229,7 +165,7 @@ module.exports = {
         message: "Student entry time updated successfully",
         student: {
           ...savedStudent._doc,
-          entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
+          entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "),
         },
       });
     } catch (error) {
@@ -249,15 +185,12 @@ module.exports = {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      // Get current Indian Standard Time (IST)
       const currentTime = new Date();
-      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
-      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+      currentTime.setHours(currentTime.getHours() + 5);
+      currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      // Set exitTime to current Indian Standard Time
       student.exitTime = currentTime;
 
-      // Mark exitTime property as modified
       student.markModified("exitTime");
 
       const savedStudent = await student.save();
@@ -266,7 +199,7 @@ module.exports = {
         message: "Student exit time updated successfully",
         student: {
           ...savedStudent._doc,
-          exitTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
+          exitTime: currentTime.toISOString().slice(0, 19).replace("T", " "),
         },
       });
     } catch (error) {

@@ -12,6 +12,9 @@ const facultySchema = new mongoose.Schema({
   entryTime: {
     type: String,
   },
+  totalTime: {
+    type: String,
+  },
   branch: {
     type: String,
     required: true,

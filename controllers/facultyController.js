@@ -200,26 +200,36 @@ module.exports = {
       const faculty = await Faculty.findOne({ emplyoeeId });
 
       if (!faculty) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Faculty not found" });
       }
 
-      // Get current Indian Standard Time (IST)
       const currentTime = new Date();
-      currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
-      currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
+      currentTime.setHours(currentTime.getHours() + 5);
+      currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      // Set entryTime to current Indian Standard Time
+      // Check if exitTime is defined
+      if (faculty.exitTime) {
+        const exitTime = new Date(faculty.exitTime);
+
+        const timeDifferenceInMilliseconds =
+          currentTime.getTime() - exitTime.getTime();
+        const totalTimeOutsideInMinutes = Math.round(
+          timeDifferenceInMilliseconds / (1000 * 60)
+        );
+        faculty.totalTime = totalTimeOutsideInMinutes;
+      }
+
       faculty.entryTime = currentTime;
 
-      // Mark entryTime property as modified
       faculty.markModified("entryTime");
+      faculty.markModified("totalTime");
 
-      const savedfaculty = await faculty.save();
+      const savedFaculty = await faculty.save();
 
       res.status(200).json({
-        message: "User entry time updated successfully",
+        message: "Faculty entry time updated successfully",
         faculty: {
-          ...savedfaculty._doc,
+          ...savedFaculty._doc,
           entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "), // Format date and time for response
         },
       });
