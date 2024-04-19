@@ -24,7 +24,7 @@ module.exports = {
       }
 
       const qrCodeData = {
-        user: "admin",
+        user: "faculty",
         emplyoeeId,
         name,
         branch,
@@ -35,7 +35,7 @@ module.exports = {
       const newFaculty = new Faculty({
         emplyoeeId,
         name,
-        user: "admin",
+        user: "faculty",
         branch,
         designation,
         userName,
@@ -85,7 +85,7 @@ module.exports = {
       }
 
       const qrCodeData = {
-        user: "admin",
+        user: "faculty",
         name,
         emplyoeeId,
         designation,
@@ -98,7 +98,7 @@ module.exports = {
       // Create a new student object without password and userName
       const newFaculty = new Faculty({
         name,
-        user: "admin",
+        user: "faculty",
         emplyoeeId,
         designation,
         branch,

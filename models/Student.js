@@ -21,6 +21,9 @@ const studentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  totalTime: {
+    type: String,
+  },
   year: {
     type: String,
     required: true,

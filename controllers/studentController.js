@@ -86,6 +86,7 @@ module.exports = {
           .json({ message: "Student with this rollNumber already exists" });
       }
       const qrCodeData = {
+        user: "student",
         rollNumber,
         name,
         year,
@@ -94,6 +95,7 @@ module.exports = {
       const qrCodeDataUri = await generateQRCode(qrCodeData);
       const newStudent = new Student({
         name,
+        user: "student",
         rollNumber,
         year,
         branch,
@@ -201,11 +203,25 @@ module.exports = {
       currentTime.setHours(currentTime.getHours() + 5); // Add 5 hours for IST
       currentTime.setMinutes(currentTime.getMinutes() + 30); // Add 30 minutes for IST
 
+      // Fetch student's exit time from the database
+      const exitTime = student.exitTime;
+
+      // Calculate time difference between exit time and current time
+      const timeDifferenceInMilliseconds = currentTime - exitTime;
+      const timeDifferenceInSeconds = timeDifferenceInMilliseconds / 1000; // Convert to seconds
+      const totalTimeOutsideInMinutes = Math.round(
+        timeDifferenceInSeconds / 60
+      ); // Convert to minutes and round to the nearest minute
+
+      // Update totalTime field in the database
+      student.totalTime = totalTimeOutsideInMinutes;
+
       // Set entryTime to current Indian Standard Time
       student.entryTime = currentTime;
 
-      // Mark entryTime property as modified
+      // Mark entryTime and totalTime properties as modified
       student.markModified("entryTime");
+      student.markModified("totalTime");
 
       const savedStudent = await student.save();
 
