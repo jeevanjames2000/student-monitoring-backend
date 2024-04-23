@@ -134,40 +134,66 @@ module.exports = {
     try {
       const { rollNumber } = req.body;
 
-      const student = await Student.findOne({ rollNumber });
+      let student = await Student.findOne({ rollNumber });
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
 
-      const currentTime = new Date();
-      currentTime.setHours(currentTime.getHours() + 5);
-      currentTime.setMinutes(currentTime.getMinutes() + 30);
+      if (student.entryTime === null) {
+        const currentTime = new Date();
+        currentTime.setHours(currentTime.getHours() + 5);
+        currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      const exitTime = student.exitTime;
+        const exitTime = student.exitTime;
 
-      const timeDifferenceInMilliseconds =
-        currentTime.getTime() - exitTime.getTime();
-      const totalTimeOutsideInMinutes = Math.round(
-        timeDifferenceInMilliseconds / (1000 * 60)
-      );
+        if (exitTime) {
+          const timeDifferenceInMilliseconds =
+            currentTime.getTime() - exitTime.getTime();
+          const totalTimeOutsideInMinutes = Math.round(
+            timeDifferenceInMilliseconds / (1000 * 60)
+          );
 
-      student.totalTime = totalTimeOutsideInMinutes;
+          student.totalTime = totalTimeOutsideInMinutes;
+        }
 
-      student.entryTime = currentTime;
+        student.entryTime = currentTime;
 
-      student.markModified("entryTime");
-      student.markModified("totalTime");
+        student.markModified("entryTime");
+        student.markModified("totalTime");
 
-      const savedStudent = await student.save();
+        const savedStudent = await student.save();
+        res.status(200).json({
+          message: "Student entry time updated successfully",
+          student: {
+            ...savedStudent._doc,
+            entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "),
+          },
+        });
+      } else {
+        const currentTime = new Date();
+        currentTime.setHours(currentTime.getHours() + 5);
+        currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      res.status(200).json({
-        message: "Student entry time updated successfully",
-        student: {
-          ...savedStudent._doc,
-          entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "),
-        },
-      });
+        const newStudent = new Student({
+          name: student.name,
+          rollNumber: student.rollNumber,
+          year: student.year,
+          branch: student.branch,
+          entryTime: currentTime,
+          exitTime: student.exitTime,
+          qrCode: student.qrCode,
+        });
+
+        const savedStudent = await newStudent.save();
+        res.status(200).json({
+          message: "Student entry time updated successfully",
+          student: {
+            ...savedStudent._doc,
+            entryTime: currentTime.toISOString().slice(0, 19).replace("T", " "),
+          },
+        });
+      }
     } catch (error) {
       res
         .status(500)
@@ -189,9 +215,22 @@ module.exports = {
       currentTime.setHours(currentTime.getHours() + 5);
       currentTime.setMinutes(currentTime.getMinutes() + 30);
 
-      student.exitTime = currentTime;
+      if (student.exitTime === null) {
+        student.exitTime = currentTime;
+        student.markModified("exitTime");
+      } else {
+        const newStudent = new Student({
+          name: student.name,
+          rollNumber: student.rollNumber,
+          year: student.year,
+          branch: student.branch,
+          entryTime: null,
+          exitTime: currentTime,
+          qrCode: student.qrCode,
+        });
 
-      student.markModified("exitTime");
+        await newStudent.save();
+      }
 
       const savedStudent = await student.save();
 
